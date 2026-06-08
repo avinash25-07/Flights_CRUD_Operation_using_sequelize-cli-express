@@ -1,48 +1,88 @@
-This is a base node js project template, which anyone can use as it has been prepared, by keeping some of the most important code principles and project management recommendations. Feel free to change anything. 
+# Flights CRUD Operation (Express + Sequelize)
 
+This project is a Node.js REST API for flight-related CRUD building blocks.  
+Current implemented module: **Airplane creation** using **Express** + **Sequelize** + **MySQL**.
 
-`src` -> Inside the src folder all the actual source code regarding the project will reside, this will not include any kind of tests. (You might want to make separate tests folder)
+## Tech Stack
 
-Lets take a look inside the `src` folder
+- Node.js
+- Express
+- Sequelize + sequelize-cli
+- MySQL (`mysql2`)
+- dotenv
+- winston (logging)
 
- - `config` -> In this folder anything and everything regarding any configurations or setup of a library or module will be done. For example: setting up `dotenv` so that we can use the environment variables anywhere in a cleaner fashion, this is done in the `server-config.js`. One more example can be to setup you logging library that can help you to prepare meaningful logs, so configuration for this library should also be done here. 
+## Project Structure
 
- - `routes` -> In the routes folder, we register a route and the corresponding middleware and controllers to it. 
+```text
+src/
+  config/         # app/server/logger configuration
+  controllers/    # request/response handling
+  migrations/     # sequelize DB migrations
+  middlewares/    # request middlewares (placeholder)
+  models/         # sequelize models
+  repositories/   # DB access layer
+  routes/         # API route registration
+  services/       # business logic layer
+  index.js        # app entry point
+```
 
- - `middlewares` -> they are just going to intercept the incoming requests where we can write our validators, authenticators etc. 
+## API Endpoints
 
- - `controllers` -> they are kind of the last middlewares as post them you call you business layer to execute the budiness logic. In controllers we just receive the incoming requests and data and then pass it to the business layer, and once business layer returns an output, we structure the API response in controllers and send the output. 
+Base path: `/api`
 
- - `repositories` -> this folder contains all the logic using which we interact the DB by writing queries, all the raw queries or ORM queries will go here.
+- `GET /api/v1/info`  
+  Health/info endpoint.
 
- - `services` -> contains the buiness logic and interacts with repositories for data from the database
+- `POST /api/v1/airplanes`  
+  Create an airplane.
 
- - `utils` -> contains helper methods, error classes etc.
-
-### Setup the project
-
- - Download this template from github and open it in your favourite text editor. 
- - Go inside the folder path and execute the following command:
+  Request body:
+  ```json
+  {
+    "modelNumber": "A320",
+    "capacity": 180
+  }
   ```
-  npm install
-  ```
- - In the root directory create a `.env` file and add the following env variables
-    ```
-        PORT=<port number of your choice>
-    ```
-    ex: 
-    ```
-        PORT=3000
-    ```
- - go inside the `src` folder and execute the following command:
-    ```
-      npx sequelize init
-    ```
- - By executing the above command you will get migrations and seeders folder along with a config.json inside the config folder. 
- - If you're setting up your development environment, then write the username of your db, password of your db and in dialect mention whatever db you are using for ex: mysql, mariadb etc
- - If you're setting up test or prod environment, make sure you also replace the host with the hosted db url.
 
- - To run the server execute
- ```
- npm run dev
- ```
+## Setup Instructions
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Create `.env` in project root:
+   ```env
+   PORT=3000
+   ```
+
+3. Initialize Sequelize config (if `src/config/config.json` is missing):
+   ```bash
+   npx sequelize init
+   ```
+   This creates `src/config/config.json` and seeders/migrations folders (depending on setup).  
+   Add your DB credentials for `development`, `test`, and `production`.
+
+4. Run migrations:
+   ```bash
+   npx sequelize db:migrate
+   ```
+
+5. Start server:
+   ```bash
+   npm run dev
+   ```
+
+## Architecture Flow
+
+`Route -> Controller -> Service -> Repository -> Sequelize Model -> MySQL`
+
+- **Controller**: validates/reads request and sends response.
+- **Service**: holds business logic.
+- **Repository**: performs DB operations.
+
+## Notes
+
+- `src/config/config.json` is gitignored by design.
+- Logs are written to console and `combined.log`.
